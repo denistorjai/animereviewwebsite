@@ -13,30 +13,24 @@ export default function Home() {
 
   // Fetch Data when Searching
   useEffect(() => {
-
     const fetchData = async () => {
-      
       // Don't search if query is 0
       if (query.length === 0) {
         setResults([]);
         return;
       }
-
       // Try Catch Data
       try {
         const response = await fetch(
           `https://api.jikan.moe/v4/anime?q=${query}&limit=5`
         );
-        
         // Await Data Response
         const data = await response.json();
         setResults(data.data);
-
       } catch (error) {
         // display error
         console.error(error);
       }
-
     };
 
     // Timeout in case
@@ -52,20 +46,25 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center h-screen flex-col">
-      <div className="flex items-center flex-col">
-        <Image src={websitelogo} alt="Review Website" />
+      <div className="flex items-center flex-col mt-[8rem]">
+        <Image src={websitelogo} alt="Review Website" className="w-[17rem]" />
         <input
           type="text"
           placeholder="Search Animes"
-          className="mt-10 p-3 rounded w-96 bg-[#509EC7] text-white placeholder-slate-300 focus:outline-none"
+          className="mt-10 p-3 rounded-lg w-[22rem] bg-[#333952] text-[#d5e0f9] placeholder-[#51566F] focus:outline-none"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <div className="mt-5 w-96">
+        <div className="mt-5 w-[21rem] h-[200px] overflow-y-hidden">
           {results.length > 0 ? (
             results.map((anime) => (
-              <div key={anime.mal_id} className="pb-3" style={{cursor: 'pointer'}} onClick={() => handleSelect(anime.mal_id)} >
-                <h3 className="text-black text-m hover:underline">{anime.title}</h3>
+              <div
+                key={anime.mal_id}
+                className="pb-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => handleSelect(anime.mal_id)}
+              >
+                <h3 className="text-[#d5e0f9] text-m hover:underline">{anime.title}</h3>
               </div>
             ))
           ) : (
