@@ -3,6 +3,8 @@ import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import websitelogo from "@/public/websitelogo.svg";
 import Link from "next/link";
+import ReviewPoster from "@/app/components/reviewposter";
+import Reviews from "@/app/components/reviews";
 
 export default function AnimePage({ params: paramsPromise }) {
 
@@ -13,25 +15,21 @@ export default function AnimePage({ params: paramsPromise }) {
   // Set States
   const [anime, setAnime] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshReviews, setRefreshReviews] = useState(false); 
 
-  // Fetch Data from API
+  // Fetch Data from API, pass through URL parameter which is anime ID.
   useEffect(() => {
     const fetchAnimeDetails = async () => {
-      // Try Catch
       try {
         setLoading(true);
-        // Fetch Data from ID Param from home page.
         const response = await fetch(`https://api.jikan.moe/v4/anime/${id}/full`);
         const data = await response.json();
         if (data.data) {
-          // Set Anime State
           setAnime(data.data);
         } else {
-          // Error for Console
           throw new Error("No data found for this anime.");
         }
       } catch (error) {
-        // Print Error for debugging
         console.log(error)
       } finally {
         setLoading(false);
@@ -52,10 +50,15 @@ export default function AnimePage({ params: paramsPromise }) {
     );
   }
 
+  // Function to refresh reviews
+  const refreshReviewsList = () => {
+    setRefreshReviews(prevState => !prevState);  // Toggle the state to force re-fetch
+  }
+
   // Anime
   return (
-    <div className="flex items-center justify-center h-screen flex-col" >
-      <Link href="/"> <Image src={websitelogo} alt="Review Website" className="w-[17rem] mb-14" /> </Link> 
+    <div className="flex items-center justify-start min-h-screen p-4 flex-col" >
+      <Link href="/"> <Image src={websitelogo} alt="Review Website" className="w-[17rem] mb-14 m-36" /> </Link> 
       <div className="flex border-[0.05rem] border-[#2e3746] rounded-lg w-[44rem] h-72 items-center" >
         <img src={anime.images.jpg.large_image_url} alt={anime.title} className="rounded-lg h-64 ml-3" />
         <div className="h-64 pl-5 mt-2 w-[32rem]" >
@@ -74,6 +77,10 @@ export default function AnimePage({ params: paramsPromise }) {
               ))}
           </div>
         </div>
+      </div>
+      <div>
+       <ReviewPoster animeId={id} refreshReviewsList={refreshReviewsList} />
+       <Reviews animeId={id} refreshReviews={refreshReviewsList} />
       </div>
     </div>
   );

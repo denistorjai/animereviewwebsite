@@ -11,29 +11,25 @@ export default function Home() {
   const [results, setResults] = useState([]);
   const router = useRouter();
 
-  // Fetch Data when Searching
+  // Handle Fetching Data
   useEffect(() => {
     const fetchData = async () => {
-      // Don't search if query is 0
       if (query.length === 0) {
         setResults([]);
         return;
       }
-      // Try Catch Data
       try {
         const response = await fetch(
           `https://api.jikan.moe/v4/anime?q=${query}&limit=5`
         );
-        // Await Data Response
         const data = await response.json();
         setResults(data.data);
       } catch (error) {
-        // display error
         console.error(error);
       }
     };
 
-    // Timeout in case
+    // Timeout just in case
     const timeoutId = setTimeout(fetchData, 500);
     return () => clearTimeout(timeoutId);
 
@@ -51,7 +47,7 @@ export default function Home() {
         <input
           type="text"
           placeholder="Search Animes"
-          className="mt-10 p-3 rounded-lg w-[22rem] bg-[#333952] text-[#d5e0f9] placeholder-[#51566F] focus:outline-none"
+          className="mt-10 p-3 rounded-lg w-[22rem] bg-[#1f2635] text-[#d5e0f9] placeholder-[#51566F] focus:outline-none"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
